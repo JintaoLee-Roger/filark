@@ -1,0 +1,164 @@
+/* =========================
+   FilArk Dark Theme (QSS)
+   ========================= */
+
+/* ---- Base ---- */
+* {
+    /* font-family: "Inter", "SF Pro Display", "PingFang SC", "Microsoft YaHei", sans-serif; */
+    /* font-size: 13px;  */
+    color: #d8d8d8;
+}
+
+QMainWindow, QWidget {
+    background: #141414;
+}
+
+
+/* =========================
+   NavBar styling
+   ========================= */
+
+/* ---- Tool buttons (icon navbar) ---- */
+QFrame#NavBar QToolButton {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.82);
+    border: 1px solid transparent; /* 给 hover/checked 留边框动画空间 */
+    border-radius: 12px;
+    padding: 2px;
+    margin: 0px;
+
+    /* 让字/emoji 更像 icon 的质感 */
+    /* font-size: 10px; */ /* 若你担心 pointSize=-1 警告，可改成 10pt */
+    font-weight: 600;
+}
+
+/* Hover：微弱的“雾面高亮” */
+QFrame#NavBar QToolButton:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Press：轻微下沉 */
+QFrame#NavBar QToolButton:pressed {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.10);
+}
+
+/* Checked：accent + 更明显的底色（但不刺眼） */
+QFrame#NavBar QToolButton:checked {
+    background: rgba(74, 144, 226, 0.18);      /* accent wash */
+    border-color: rgba(74, 144, 226, 0.35);    /* accent outline */
+    color: rgba(255, 255, 255, 0.92);
+}
+
+/* Checked + Hover：再强调一点 */
+QFrame#NavBar QToolButton:checked:hover {
+    background: rgba(74, 144, 226, 0.24);
+    border-color: rgba(74, 144, 226, 0.45);
+}
+
+/* Disabled */
+QFrame#NavBar QToolButton:disabled {
+    color: rgba(255, 255, 255, 0.30);
+}
+
+
+
+/* =========================
+   SlidingDrawer styling
+   ========================= */
+
+#SlidingDrawer {
+    background: rgba(40, 40, 40, 0.95);
+    border-right: 1px solid #555;
+    border-top: 1px solid #555;
+}
+
+/* Drawer 内部卡片/区域（可选：给某些 panel 用 QFrame 包住更好看） */
+#SlidingDrawer QFrame, #SlidingDrawer QGroupBox {
+    background: rgba(30, 30, 30, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ---- Stacked pages ---- */
+QStackedWidget {
+    background: transparent;
+}
+
+
+
+
+PanelTitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.95);
+    padding-bottom: 4px;
+}
+
+HintText {
+    color: rgba(255,255,255,0.55);
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+
+QLabel { background: transparent; border: none; }
+
+QGroupBox {
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    margin-top: 10px;
+    padding: 10px;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 12px;
+    top: 0px;
+    padding: 0 6px;
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.65);
+    background: #0f1115;
+}
+
+
+
+/* Annotation list readability */
+#annList {
+    background: #1e1e1e;
+    color: #e6e6e6;
+    border: 1px solid #3a3a3a;
+    border-radius: 6px;
+    padding: 4px;
+    alternate-background-color: #252526; /* 交替行底色 */
+}
+
+#annList::item {
+    padding: 4px 6px;
+    margin: 1px 0px;
+    border-radius: 4px;
+}
+
+/* 被选中时：高对比 */
+#annList::item:selected {
+    background: #0e639c;
+    color: #ffffff;
+}
+
+/* 选中但控件未激活（比如焦点不在列表上） */
+#annList::item:selected:!active {
+    background: #3a3d41;
+    color: #ffffff;
+}
+
+/* 悬停反馈 */
+#annList::item:hover {
+    background: #2a2d2e;
+}
+
+/* Disabled 状态（如果你会禁用 panel） */
+#annList:disabled {
+    color: #888888;
+}

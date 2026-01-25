@@ -1,0 +1,49 @@
+
+### TODO
+
+- Resolution pyramid
+- GUI
+
+### Sliding Window Pyramid
+
+目的:
+ - 消除视觉假象： 解决大比例缩小（Zoom out）时因采样率不足导致的信号混叠或瞬态事件丢失。
+ - 极致响应速度： 实现缩放时的秒级切换，避免频繁的磁盘 IO 阻塞 UI
+ - 内存安全： 无论原始数据多大（TB 级），UI 内存占用始终恒定（控制在几十 MB）。
+
+实现步骤:
+1. 实现一个高效的 Min-Max 降采样函数。
+逻辑： 将原始序列切分为 $N$ 个像素桶，计算每个桶内的 max 和 min。
+技术点： 使用 NumPy 的 reshape 配合 max(axis=1) 和 min(axis=1)，避免 Python 原生循环。
+产出： 一个输入 raw_data 输出 (buffer_w, 2) 形状数组的工具函数。
+2. 多级滑动窗口管理
+构建 L0–L4 缓存金字塔。
+结构： 定义 5 个固定大小的 Buffer：$L_k.shape = (Channels, Buffer\_W, 2)$。为每层 Buffer 维护一个 range = [start_time, end_time]。
+更新触发机制：
+- L0 (Real-time 层)： 窗口最窄，随滚动实时读取，只做简单的数值映射。
+- L1-L4 (Strategic 层)： 窗口跨度呈指数级递增（如 2x, 4x, 8x...）。只有当视口中心偏离缓存中心超过一定阈值（如 25%）时，才触发异步更新。
+- 多线程 IO： 确保 L1-L4 的磁盘读取和计算在后台线程完成，不卡顿渲染循环
+3. 渲染逻辑适配
+调整可视化引擎的绘制方式。
+- 层级切换： 根据当前屏幕的 spp (samples per pixel) 自动选择 $L_k$。
+
+代价:
+- 内存 (RAM): 极低：约 $5 \times \text{Buffer Size}$。内存占用不随时间轴长度增加，系统极度稳定。
+- 计算负载 (CPU): 中等：每次触发更新时，需要对读取的大块数据做一次降采样计算。 换取了缩放时的零延迟体验。
+- 磁盘 IO: 优化级：避免了乱序的小片读取，改为有规律的大块顺序读取。
+- 开发难度: 中高：需要处理好线程同步、各层级边界对齐、以及缩放时的平滑过渡。
+
+
+
+### 框架
+
+filark/
+  algorithms/  % 检测/监测算法，AI模型
+  dsp/ % 滤波，f-k，需要实现多套接口，cpu上做数据分析时scipy，做pipeline时，pyfftw，gpu的实现，如jax, cupy, torch，函数式与class的接口
+  explore/ % 一些科研上的分析代码，比如mpl的绘图功能，比较杂乱
+  gui/ % gui要和viz完全结解耦,一些基础功能，注意兼容性，能兼容ptqt5,pyqt6, pyside6
+  io/  % 不同的数据格式，多个文件拼接成streaming， 以及真正的steaming，为了viz而实现的LOD调度与维护
+  pipeline/ % 面对无限流数据，如何从feed 数据 -> 执行处理 -> 输出结果 -> 同时可视化, 负责实际的落地,有些像transformers的pipeline
+  processing/ % 预处理通类，一些简单的预处理，可拓展，方便pipeline使用
+  utils/ % 一些无法归类的内容，也许是一些更方便的时间、空间格式处理?
+  viz/ % 基于vispy的可视化，数据滚动，多分辨率 

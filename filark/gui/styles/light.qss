@@ -1,0 +1,84 @@
+/* =========================
+   FilArk Light Theme (QSS)
+   ========================= */
+
+/* ---- Base ---- */
+* {
+    /* font-family: "Inter", "SF Pro Display", "PingFang SC", "Microsoft YaHei", sans-serif; */
+    /* font-size: 13px;  */
+    color: #1f1f1f;
+}
+
+QMainWindow, QWidget {
+    background: #f6f7f9;
+}
+
+
+/* =========================
+   NavBar styling
+   ========================= */
+
+/* ---- Tool buttons (icon navbar) ---- */
+QFrame#NavBar QToolButton {
+    background: transparent;
+    color: rgba(0, 0, 0, 0.74);
+    border: 1px solid transparent;
+    border-radius: 12px; /* 圆弧的程度 */
+    padding: 2px;
+    margin: 0px;
+
+    /* font-size: 10px; */  /* 若要避免 pixel/point 混用，可改成 10pt */
+    font-weight: 600;
+}
+
+/* Hover：淡淡的卡片感 */
+QFrame#NavBar QToolButton:hover {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.06);
+}
+
+/* Press：轻微收缩 */
+QFrame#NavBar QToolButton:pressed {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: rgba(0, 0, 0, 0.10);
+}
+
+/* Checked：accent + 干净的浅蓝选中态 */
+QFrame#NavBar QToolButton:checked {
+    background: rgba(74, 144, 226, 0.14);
+    border-color: rgba(74, 144, 226, 0.30);
+    color: rgba(0, 0, 0, 0.86);
+}
+
+/* Checked + Hover */
+QFrame#NavBar QToolButton:checked:hover {
+    background: rgba(74, 144, 226, 0.18);
+    border-color: rgba(74, 144, 226, 0.38);
+}
+
+/* Disabled */
+QFrame#NavBar QToolButton:disabled {
+    color: rgba(0, 0, 0, 0.30);
+}
+
+
+/* =========================
+   SlidingDrawer styling
+   ========================= */
+
+#SlidingDrawer {
+    background: rgba(255, 255, 255, 0.96);
+    border-right: 1px solid #d8dde5;
+    border-top: 1px solid #d8dde5;
+}
+
+/* Drawer 内部卡片区域 */
+#SlidingDrawer QFrame, #SlidingDrawer QGroupBox {
+    background: rgba(255, 255, 255, 0.98);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* ---- Stacked pages ---- */
+QStackedWidget {
+    background: transparent;
+}
