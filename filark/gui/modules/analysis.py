@@ -77,9 +77,50 @@ class AnalysisPanel(QWidget):
 
     def set_roi_mode(self, enabled: bool):
         """Controller can force-sync UI state (e.g., when switching tools)."""
-        self.ck_roi_mode.blockSignals(True)
+        # self.ck_roi_mode.blockSignals(True)
         self.ck_roi_mode.setChecked(bool(enabled))
-        self.ck_roi_mode.blockSignals(False)
+        # self.ck_roi_mode.blockSignals(False)
+
+    def reset(
+        self,
+        *,
+        clear_roi: bool = True,
+        clear_method: bool = False,
+        disable_roi_mode: bool = True,
+    ):
+        """
+        Reset / clear panel state (UI-only).
+
+        Parameters
+        ----------
+        clear_roi : bool
+            Reset ROI to (0, 0, 0, 0) and sync spinboxes.
+        clear_method : bool
+            Reset method selection to default (index 0).
+        disable_roi_mode : bool
+            Turn off ROI drag mode checkbox.
+        """
+
+        # ---- ROI ----
+        if clear_roi:
+            self.roi = ROI(0, 0, 0, 0)
+            self._sync_roi_fields()
+            self.roi_changed.emit(self.roi)
+            self.roi_committed.emit(self.roi)
+
+        # ---- ROI mode ----
+        if disable_roi_mode:
+            self.ck_roi_mode.blockSignals(True)
+            self.ck_roi_mode.setChecked(False)
+            self.ck_roi_mode.blockSignals(False)
+            self.roi_mode_toggled.emit(False)
+
+        # ---- Method ----
+        if clear_method:
+            self.cb_type.blockSignals(True)
+            self.cb_type.setCurrentIndex(0)
+            self.cb_type.blockSignals(False)
+            self.method_changed.emit(self.current_method())
 
     # ---------------- UI ----------------
 

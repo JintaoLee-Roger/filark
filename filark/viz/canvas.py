@@ -171,7 +171,10 @@ class StreamingCanvas(scene.SceneCanvas, RealtimeAutoScrollMixin, KeyboardPanMix
 
         # 1) wrap source
         if not isinstance(source, StreamingSource):
-            source = StreamingSource(source)
+            dims = "auto"
+            if hasattr(source, "dims"):
+                dims = source.dims
+            source = StreamingSource(source, dims=dims)
         self.source = source
         self.nc, self.nt = self.source.shape
 
@@ -475,7 +478,6 @@ class StreamingCanvas(scene.SceneCanvas, RealtimeAutoScrollMixin, KeyboardPanMix
         self.camera.view_changed()
         self._update_world_layer_transform()
         self.update()
-        print(self.camera.rect)
 
 
     def _update_world_layer_transform(self):
@@ -505,5 +507,30 @@ class StreamingCanvas(scene.SceneCanvas, RealtimeAutoScrollMixin, KeyboardPanMix
         self.image.resize((1, 1))
         self.image.visible = False
 
+        if getattr(self, "world_layer", None) is not None:
+            self._detach_all_children(self.world_layer)
+            try:
+                self.world_layer.transform = STTransform(scale=(1.0, 1.0, 1.0), translate=(0.0, 0.0, 0.0))
+            except Exception:
+                pass
+
         self.freeze()
         self.update()
+
+
+    def _detach_all_children(self, node: scene.Node):
+        """Detach all children nodes from a scene.Node safely."""
+        # copy list to avoid modifying while iterating
+        for ch in list(getattr(node, "children", [])):
+            try:
+                if hasattr(ch, "close") and callable(ch.close):
+                    ch.close()
+            except Exception:
+                pass
+            try:
+                ch.parent = None
+            except Exception:
+                try:
+                    ch._parent = None
+                except Exception:
+                    pass

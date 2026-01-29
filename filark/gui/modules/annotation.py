@@ -81,10 +81,6 @@ class AnnotationStore:
     def clear(self):
         self._items.clear()
         self._order.clear()
-        # labels 是否清空按你的产品需求决定：
-        # - 如果 labels 是“词表”，保留更方便；如果 labels 必须与 items 同步，则清空。
-        # 这里沿用你之前的逻辑：不强制清空 labels。
-        # self._labels.clear()
 
     # -------- Export helpers --------
     def dump(self) -> dict:

@@ -44,6 +44,12 @@ Run in Teminal:
 
 ```bash
 filark
+
+# select theme ('light' or 'dark', default is 'dark')
+filark --theme light
+
+# open a file 
+filark --f /Usx/xxx/xxx/xx58.h5
 ```
 
 Run in python:
@@ -52,6 +58,9 @@ Run in python:
 from filark.gui.app import run_app
 
 run_app()
+
+# light theme
+run_app(theme='light')
 ```
 
 
@@ -61,18 +70,18 @@ From source:
 from filark.gui.app import run_app
 
 # 1. from str (h5 file)
-run_app('data/xxxxx.h5')
+run_app(source='data/xxxxx.h5')
 
 # 2. from str (npy file)
-run_app('data/xxxxx.npy')
+run_app(source='data/xxxxx.npy')
 
 # 3. from str (binary file)
-run_app('data/xxxxx.dat')
+run_app(source='data/xxxxx.dat')
 
 # 4. from np array
 import numpy as np
 data = np.load('data/xxxxx.npy')
-run_app(data)
+run_app(source=data)
 
 # 5. from Tape
 # 5.1 h5tape
@@ -113,7 +122,7 @@ tape = NpyTape(d,
                dx_unit="m")
 
 
-run_app(tape)
+run_app(source=tape)
 ```
 
 

@@ -26,14 +26,12 @@ class SlidingDrawer(QWidget):
 
         self.hide()
 
-    # ===== 你缺的两个接口 =====
     def add_module(self, widget: QWidget):
         self.stack.addWidget(widget)
 
     def set_content_widget(self, index: int):
         self.stack.setCurrentIndex(index)
 
-    # ===== 动画结束后 hide（避免抽屉盖住 NavBar）=====
     def _on_anim_finished(self):
         if self._pending_hide:
             self._pending_hide = False
@@ -41,7 +39,7 @@ class SlidingDrawer(QWidget):
 
     def toggle(self, show: bool, anchor_x: int, parent_height: int):
         """
-        anchor_x: NavBar 右边缘 x（通常=navbar_width）
+        anchor_x: NavBar 右边缘 x (通常=navbar_width)
         """
         self.anim.stop()
         self._pending_hide = False

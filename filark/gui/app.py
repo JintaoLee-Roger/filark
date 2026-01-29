@@ -27,15 +27,23 @@ def apply_theme(app: QApplication, theme_name: str = "dark"):
     app.setStyleSheet(qss)
 
 
-def run_app(argv: list[str] | None = None, source = None):
+def run_app(argv: list[str] | None = None, theme=None, source = None):
     argv = sys.argv[1:] if argv is None else argv
     args = build_parser().parse_args(argv)
+    if theme is not None:
+        if theme in ('dark', 'light'):
+            args.theme = theme
+        else:
+            raise ValueError("theme can only be one of ('dark', 'light')")
+        
+    if source is not None:
+        args.f = source
 
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
     apply_theme(app, args.theme)
     
-    window = MainWindow(theme=args.theme, source=source)
+    window = MainWindow(theme=args.theme, source=args.f)
     window.show()
     
     sys.exit(app.exec())

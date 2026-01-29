@@ -206,6 +206,52 @@ class VisualsPanel(QWidget):
             with QSignalBlocker(self.sp_height):
                 self.sp_height.setValue(self.state.height)
 
+
+    def reset(
+        self,
+        *,
+        reset_clim: bool = True,
+        reset_cmap: bool = True,
+        reset_view: bool = True,
+        reset_scroll: bool = True,
+    ):
+        """
+        Reset visuals panel to default state (UI + canvas).
+
+        This is UI-only; it does NOT touch source / data lifecycle.
+        Safe to call multiple times.
+        """
+
+        default = VisualState()
+
+        # ---- clim ----
+        if reset_clim:
+            self.state.vmin = default.vmin
+            self.state.vmax = default.vmax
+            with QSignalBlocker(self.sp_vmin), QSignalBlocker(self.sp_vmax):
+                self.sp_vmin.setValue(default.vmin)
+                self.sp_vmax.setValue(default.vmax)
+            # self._apply_clim_to_canvas()
+
+        # ---- cmap / interpolation ----
+        if reset_cmap:
+            self.state.cmap = default.cmap
+            self.state.interpolation = default.interpolation
+            with QSignalBlocker(self.cb_cmap), QSignalBlocker(self.cb_interp):
+                self.cb_cmap.setCurrentText(default.cmap)
+                self.cb_interp.setCurrentText(default.interpolation)
+            # self._apply_cmap_to_canvas()
+            # self._apply_interp_to_canvas()
+
+        # ---- view geometry ----
+        if reset_view:
+            pass # TODO
+
+        # ---- scrolling ----
+        if reset_scroll:
+            pass # TODO
+
+
     # ---------------- Handlers ----------------
     def _on_clim_changed(self):
         vmin = float(self.sp_vmin.value())

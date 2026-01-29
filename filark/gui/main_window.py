@@ -17,6 +17,27 @@ from filark.viz.canvas import StreamingCanvas
 from filark.io.protocols import Tape
 from filark.io.tapeio import NpyTape
 
+def fast_clim(source, *, cap=256, k=3.0):
+    a, b = source.shape[:2]
+    if a == 0 or b == 0:
+        return 0.0, 1.0
+
+    s = min(cap, a, b)
+    coords = [
+        (0, 0),
+        # (max(0, (a - s)//2), max(0, (b - s)//2)),
+        # (max(0, a - s),      max(0, b - s)),
+    ]
+
+    blocks = [np.asarray(source[i:i+s, j:j+s]) for i, j in coords]
+    vals = np.concatenate([blk.ravel() for blk in blocks if blk.size], axis=0)
+
+    if vals.size == 0:
+        return 0.0, 1.0
+
+    ma = float(vals.mean())
+    st = float(vals.std()) or 1.0
+    return ma - k * st, ma + k * st
 
 
 class LoadedInitMixin:
@@ -27,21 +48,17 @@ class LoadedInitMixin:
     disp_model: DisplayModel
 
     def _on_loaded(self, source: Tape):
-        n = min(200, source.shape[0] if source.dims == "nt_nc" else source.shape[1])
-
-        if source.dims == "nt_nc":
-            samples = source[:n, :]
-        else:
-            samples = source[:, :n]
-
-        ma = float(samples.mean()) if samples.size else 0.0
-        st = float(samples.std()) if samples.size else 1.0
-        vmin = ma - 3 * st
-        vmax = ma + 3 * st
-
+        vmin, vmax = fast_clim(source)
         self._source = source
         self.disp_model.set_source(source)
         self.viz_panel.set_clim(vmin, vmax)
+
+    def _on_clear(self):
+        self.source = None 
+        self.ann_panel._on_clear_clicked()
+        self.ana_panel.reset()
+        self.viz_panel.reset()
+        self.disp_model.clear()
 
 
 class AnnotationMixin:
@@ -163,6 +180,8 @@ class MainWindow(QMainWindow, LoadedInitMixin, AnnotationMixin):
                 dx=1,
                 dx_unit="m",
             )
+        elif isinstance(source, (Tape)):
+            pass
         else:
             raise ValueError(f"unkown source: {source}")
 
@@ -175,6 +194,7 @@ class MainWindow(QMainWindow, LoadedInitMixin, AnnotationMixin):
         self.load_panel = LoadPanel()
         self.drawer.add_module(self.load_panel)
         self.load_panel.loaded.connect(self._on_loaded)
+        self.load_panel.btn_close.clicked.connect(self._on_clear)
 
         # 2) Visuals
         self.viz_panel = VisualsPanel(self.disp_model)
@@ -292,6 +312,8 @@ class MainWindow(QMainWindow, LoadedInitMixin, AnnotationMixin):
         # gate only on Annotation tab (idx == 2), and only when ROI is not enabled
         # (DisplayModel will ignore if ROI is enabled anyway, but we keep it explicit)
         self.disp_model.set_annotation_gate(idx == 2)
+        if idx != 3:
+            self.ana_panel.set_roi_mode(False)
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

@@ -776,6 +776,11 @@ class DisplayModel(QObject, VisualMixin, EventRouterMixin, RectGeomMixin):
         self.roi_committed.emit(geom)
         ev.handled = True
 
+    def clear(self):
+        self.clear_overlays()
+        # self._roi_rect.
+        self._canvas.clear_source()
+
 
 # =========================
 # Router proxy

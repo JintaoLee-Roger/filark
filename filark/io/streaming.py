@@ -76,6 +76,9 @@ class StreamingSource:
     layout: Layout = "auto"
     """Raw data layout: 'auto', 'nc_nt', or 'nt_nc'."""
 
+    dims: Layout = "auto"
+    """Raw data layout: 'auto', 'nc_nt', or 'nt_nc'."""
+
     preprocess: Optional[Callable[[np.ndarray], np.ndarray]] = None
     """Optional preprocessing applied on raw slices."""
 
@@ -92,8 +95,13 @@ class StreamingSource:
         if self.scale_x < 1.0 or self.scale_y < 1.0:
             raise ValueError("scale_x/scale_y are compression factors and must be >= 1.0")
 
+        if self.dims != 'auto':
+            self.layout = self.dims
         self._layout = self._infer_layout(self.data.shape, self.layout)
         self._base_h, self._base_w = self._logical_shape_from_data_shape(self.data.shape, self._layout)
+        self.layout = self._layout 
+        self.dims = self._layout 
+
 
     # ---- layout helpers ----
     @staticmethod
