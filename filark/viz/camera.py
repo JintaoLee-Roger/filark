@@ -96,6 +96,18 @@ class StreamingCamera(PanZoomCamera):
     def add_view_listener(self, fn):
         self._listeners.append(fn)
 
+    def remove_view_listener(self, fn) -> bool:
+        """Remove a previously added callback. Returns True if removed."""
+        try:
+            self._listeners.remove(fn)
+            return True
+        except ValueError:
+            return False
+
+    def clear_view_listeners(self):
+        """Remove all listeners."""
+        self._listeners.clear()
+
     def view_changed(self):
         for fn in self._listeners:
             fn(self)

@@ -27,7 +27,7 @@ def apply_theme(app: QApplication, theme_name: str = "dark"):
     app.setStyleSheet(qss)
 
 
-def run_app(argv: list[str] | None = None):
+def run_app(argv: list[str] | None = None, source = None):
     argv = sys.argv[1:] if argv is None else argv
     args = build_parser().parse_args(argv)
 
@@ -35,7 +35,7 @@ def run_app(argv: list[str] | None = None):
     app.setStyle("Fusion")
     apply_theme(app, args.theme)
     
-    window = MainWindow(theme=args.theme)
+    window = MainWindow(theme=args.theme, source=source)
     window.show()
     
     sys.exit(app.exec())

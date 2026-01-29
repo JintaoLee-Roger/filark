@@ -1,5 +1,9 @@
 # filark/gui/main_window.py
 from __future__ import annotations
+import os
+from pathlib import Path
+from typing import Optional
+import numpy as np
 
 from PySide6.QtWidgets import QMainWindow, QWidget, QHBoxLayout
 
@@ -11,6 +15,8 @@ from .roi import ROIWindow
 
 from filark.viz.canvas import StreamingCanvas
 from filark.io.protocols import Tape
+from filark.io.tapeio import NpyTape
+
 
 
 class LoadedInitMixin:
@@ -21,13 +27,15 @@ class LoadedInitMixin:
     disp_model: DisplayModel
 
     def _on_loaded(self, source: Tape):
-        # load part data to calculate initial clim
-        if source.dims == 'nt_nc':
-            samples = source[:200, :]
+        n = min(200, source.shape[0] if source.dims == "nt_nc" else source.shape[1])
+
+        if source.dims == "nt_nc":
+            samples = source[:n, :]
         else:
-            samples = source[:, :200]
-        ma = samples.mean()
-        st = samples.std()
+            samples = source[:, :n]
+
+        ma = float(samples.mean()) if samples.size else 0.0
+        st = float(samples.std()) if samples.size else 1.0
         vmin = ma - 3 * st
         vmax = ma + 3 * st
 
@@ -65,7 +73,7 @@ class AnnotationMixin:
 
 
 class MainWindow(QMainWindow, LoadedInitMixin, AnnotationMixin):
-    def __init__(self, theme: str = "dark"):
+    def __init__(self, theme: str = "dark", source: Optional[Tape] = None):
         super().__init__()
         self.setWindowTitle("FiLark Viz")
         self.resize(1200, 800)
@@ -117,6 +125,49 @@ class MainWindow(QMainWindow, LoadedInitMixin, AnnotationMixin):
 
         # signals
         self.navbar.idx_changed.connect(self.handle_panel_toggle)
+
+        if source is not None:
+            self.set_source(source)
+
+    def set_source(self, source: Tape):
+        # close old
+        old = getattr(self, "_source", None)
+        if old is not None and old is not source:
+            try:
+                old.close()
+            except Exception:
+                pass
+
+        if isinstance(source, (str, os.PathLike)):
+            path = Path(str(source))
+
+            if path.is_file():
+                ok = self.load_panel._load_file(path)
+                if ok:
+                    self.load_panel._sync_info_from_source()
+                    self.load_panel.loaded.emit(self.load_panel._current_source)
+                    return
+            elif path.is_dir():
+                ok = self.load_panel._load_folder(path)
+                if ok:
+                    self.load_panel._sync_info_from_source()
+                    self.load_panel.loaded.emit(self.load_panel._current_source)
+                    return
+            else:
+                raise ValueError(f"unkown source: {source}")
+        elif isinstance(source, (np.ndarray, np.memmap)):
+            source = NpyTape(
+                source,
+                dims="nt_nc",
+                fs=1,
+                dx=1,
+                dx_unit="m",
+            )
+        else:
+            raise ValueError(f"unkown source: {source}")
+
+        self._on_loaded(source)
+        self.load_panel.set_current_source(source)
 
 
     def init_drawer_modules(self):
