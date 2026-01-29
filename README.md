@@ -40,10 +40,80 @@ pip install -e .
 
 ### Fast Usage
 
-Run: 
+Run in Teminal: 
 
 ```bash
 filark
+```
+
+Run in python:
+
+```python
+from filark.gui.app import run_app
+
+run_app()
+```
+
+
+From source:
+
+```python
+from filark.gui.app import run_app
+
+# 1. from str (h5 file)
+run_app('data/xxxxx.h5')
+
+# 2. from str (npy file)
+run_app('data/xxxxx.npy')
+
+# 3. from str (binary file)
+run_app('data/xxxxx.dat')
+
+# 4. from np array
+import numpy as np
+data = np.load('data/xxxxx.npy')
+run_app(data)
+
+# 5. from Tape
+# 5.1 h5tape
+from filark.io.tapeio import H5Tape, NpyTape, BinTape
+tape = H5Tape('data/xxx.h5')
+
+# 5.2 h5tape with keys
+tape = H5Tape('data/xxx.h5', 
+              datakey="Acquisition/Raw[0]/RawData", 
+              fs_key=('Acquisition/Raw[0]', 'OutputDataRate'),
+              dx_key=('Acquisition', 'SpatialSamplingInterval'),
+              dims_key=('Acquisition/Raw[0]/RawData', 'Dimensions'),
+              dxunit_key=('Acquisition', 'SpatialSamplingIntervalUnit'))
+
+# 5.3 NpyTape
+tape = NpyTape('data/xxx.npy', 
+               dims="nt_nc", # "nt_nc" or "nc_nt"
+               fs=1550,
+               dx=5,
+               dx_unit="m")
+
+# 5.4 BinTape
+tape = BinTape('data/xxx.dat', 
+               nt=93000,
+               nc=6455,
+               dtype='float32', # np.dtype(dtype)
+               dims="nt_nc", # "nt_nc" or "nc_nt"
+               fs=1550,
+               dx=5,
+               dx_unit="m")
+
+# 5.5 Array
+d = np.load('data/xxx.npy')
+tape = NpyTape(d, 
+               dims="nt_nc", # "nt_nc" or "nc_nt"
+               fs=1550,
+               dx=5,
+               dx_unit="m")
+
+
+run_app(tape)
 ```
 
 
