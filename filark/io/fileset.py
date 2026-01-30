@@ -170,15 +170,37 @@ class TapeFileSet(Tape):
     # --------------------
     def __getitem__(self, key: Any) -> np.ndarray:
         if isinstance(key, tuple):
-            row_key = key[0]
-            col_key = key[1] if len(key) > 1 else slice(None)
+            k0 = key[0]
+            k1 = key[1] if len(key) > 1 else slice(None)
         else:
-            row_key = key
-            col_key = slice(None)
+            k0 = key
+            k1 = slice(None)
 
-        # 单行
-        if isinstance(row_key, (int, np.integer)):
-            i = int(row_key)
+        # time axis depends on dims
+        time_axis = 0 if self._dims == "nt_nc" else 1
+
+        # normalize selectors for (axis0, axis1)
+        if time_axis == 0:
+            ax0_key, ax1_key = k0, k1
+        else:
+            ax0_key, ax1_key = k1, k0
+
+        # helper: take from a single tape with (axis0, axis1) keys
+        def take_one(t: Tape, a0, a1):
+            return t[a0, a1]
+
+        # helper: concat along time axis (in tape's native axis order)
+        def cat(chunks):
+            return np.concatenate(chunks, axis=time_axis)
+
+        # --------
+        # Case 1: time index is int
+        # --------
+        tkey = ax1_key if time_axis == 0 else ax0_key
+        okey = ax0_key if time_axis == 0 else ax1_key
+
+        if isinstance(tkey, (int, np.integer)):
+            i = int(tkey)
             if i < 0:
                 i += self._nt_total
             if i < 0 or i >= self._nt_total:
@@ -186,21 +208,42 @@ class TapeFileSet(Tape):
 
             fidx = int(np.searchsorted(self._cum_nts, i, side="right") - 1)
             rel = i - int(self._cum_nts[fidx])
-
             t = self._files[fidx]
-            if t.dims == "nt_nc":
-                return t[rel, col_key]
-            else:
-                return t[col_key, rel]
 
-        # 切片
-        if isinstance(row_key, slice):
-            start, stop, step = row_key.indices(self._nt_total)
+            if time_axis == 0:
+                # t[time, other]
+                return take_one(t, rel, okey)
+            else:
+                # t[other, time]
+                return take_one(t, okey, rel)
+
+        # --------
+        # Case 2: time index is slice
+        # --------
+        if isinstance(tkey, slice):
+            start, stop, step = tkey.indices(self._nt_total)
+
             if step != 1:
-                return np.array([self[(i, col_key)] for i in range(start, stop, step)], dtype=self.dtype)
+                # correct but slower: gather then stack/concat
+                # keep numpy semantics: result axis position follows original indexing
+                if time_axis == 0:
+                    return np.array([self[(i, k1)] if isinstance(key, tuple) else self[i] for i in range(start, stop, step)],
+                                    dtype=self.dtype)
+                else:
+                    # time axis is 1: build by concatenating along axis=1
+                    parts = []
+                    for i in range(start, stop, step):
+                        parts.append(self[(k0, i)] if isinstance(key, tuple) else self[:, i])
+                    return np.stack(parts, axis=time_axis)  # shape handling best-effort
 
             if start >= stop:
-                return np.empty((0, self._nc), dtype=self.dtype)
+                # empty slice: construct empty with correct rank
+                if time_axis == 0:
+                    # (0, nc') where nc' depends on okey
+                    # simplest: take a small sample to infer shape if possible
+                    return np.empty((0, 0), dtype=self.dtype) if okey == slice(None) else np.empty((0,), dtype=self.dtype)
+                else:
+                    return np.empty((0, 0), dtype=self.dtype) if okey == slice(None) else np.empty((0,), dtype=self.dtype)
 
             p_start = int(np.searchsorted(self._cum_nts, start, side="right") - 1)
             p_stop = int(np.searchsorted(self._cum_nts, stop - 1, side="right") - 1)
@@ -217,17 +260,19 @@ class TapeFileSet(Tape):
                 rel1 = s1 - f0
 
                 t = self._files[fidx]
-                if t.dims == "nt_nc":
-                    chunks.append(t[rel0:rel1, col_key])
+                if time_axis == 0:
+                    chunks.append(t[rel0:rel1, okey])   # ✅ no transpose
                 else:
-                    # dims=nc_nt: 时间在第二维
-                    chunks.append(t[col_key, rel0:rel1].T if isinstance(col_key, slice) else t[col_key, rel0:rel1])
+                    chunks.append(t[okey, rel0:rel1])   # ✅ no transpose
 
             if not chunks:
-                return np.empty((0, self._nc), dtype=self.dtype)
-            return np.concatenate(chunks, axis=0)
+                # return truly empty, but keep dtype
+                return np.empty((0,), dtype=self.dtype)
 
-        raise TypeError(f"Unsupported index type: {type(row_key)}")
+            return cat(chunks)
+
+        raise TypeError(f"Unsupported time-axis index type: {type(tkey)}")
+
 
     # --------------------
     # lifecycle
