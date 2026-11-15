@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "filark"
+version = "0.0.5"
+authors = [
+    {name = "Jintao Li", email = "lijintaobt@gmail.com"},
+]
+license = { text="MIT" }
+
+
+description = "Streaming-first framework for DAS data access, visualization, processing, annotation, and external analysis integration"
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = ["visualization", "geophysics", "DAS", "Fiber"]
+dependencies = [
+    "numpy",
+    "matplotlib",
+    "pyqtgraph",
+    "vispy",
+    "h5py",
+    "scipy",
+]
+
+[project.optional-dependencies]
+gui = [
+    "PySide6",
+]
+gpu = [
+    "torch",
+]
+all = [
+    "PySide6",
+    "torch",
+]
+
+
+[project.urls]
+Homepage = "https://github.com/JintaoLee-Roger/filark"
+Documentation = "https://filark.readthedocs.io"
+
+
+[project.scripts]
+filark = "filark.gui.app:run_app"
+
+[tool.setuptools.package-data]
+"filark.gui.styles" = ["*.qss"]
+
+[tool.setuptools.packages.find]
+include = ["filark*"]

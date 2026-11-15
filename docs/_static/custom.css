@@ -1,0 +1,239 @@
+:root {
+  --filark-surface: color-mix(in srgb, var(--color-background-primary) 92%, var(--color-brand-primary) 8%);
+  --filark-surface-strong: color-mix(in srgb, var(--color-background-primary) 84%, var(--color-brand-primary) 16%);
+  --filark-border: color-mix(in srgb, var(--color-foreground-muted) 24%, transparent);
+  --filark-accent-green: #17845b;
+  --filark-accent-amber: #9a6200;
+}
+
+body[data-theme="dark"] {
+  --filark-accent-green: #63c69a;
+  --filark-accent-amber: #e1ad4f;
+}
+
+@media (prefers-color-scheme: dark) {
+  body:not([data-theme="light"]) {
+    --filark-accent-green: #63c69a;
+    --filark-accent-amber: #e1ad4f;
+  }
+}
+
+.content {
+  line-height: 1.68;
+}
+
+.content h1,
+.content h2,
+.content h3 {
+  letter-spacing: 0;
+}
+
+.content h1 {
+  margin-bottom: 1.1rem;
+}
+
+#filark-documentation > h1 {
+  font-size: clamp(2.2rem, 3.8vw, 3.1rem);
+  line-height: 1.1;
+}
+
+.landing-hero {
+  margin: 0.35rem 0 2.1rem;
+  max-width: 56rem;
+}
+
+.landing-hero-main {
+  min-width: 0;
+}
+
+.hero-kicker {
+  color: var(--color-brand-content);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-top: 0.2rem;
+  text-transform: uppercase;
+}
+
+.hero-title {
+  color: var(--color-foreground-primary);
+  font-size: clamp(2rem, 3.6vw, 2.75rem);
+  font-weight: 760;
+  line-height: 1.12;
+  margin: 0.45rem 0 0.8rem;
+  max-width: 18ch;
+}
+
+.hero-body {
+  color: var(--color-foreground-secondary);
+  font-size: 1.02rem;
+  line-height: 1.7;
+  max-width: 46rem;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.15rem;
+  margin-top: 1rem;
+}
+
+.hero-link {
+  align-items: center;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-brand-content) 55%, transparent);
+  color: var(--color-brand-content);
+  display: inline-flex;
+  font-weight: 700;
+  min-height: 2.3rem;
+  padding: 0.25rem 0;
+  text-decoration: none;
+}
+
+.hero-link:visited {
+  color: var(--color-brand-content);
+}
+
+.hero-link:hover {
+  border-bottom-color: var(--color-brand-content);
+  color: var(--color-brand-content);
+  text-decoration: none;
+}
+
+.video-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 1rem 0 2rem;
+}
+
+.video-card {
+  min-width: 0;
+}
+
+.video-card iframe {
+  aspect-ratio: 16 / 9;
+  border: 0;
+  border-radius: 8px;
+  display: block;
+  width: 100%;
+}
+
+.video-card strong {
+  color: var(--color-foreground-primary);
+  display: block;
+  font-size: 0.94rem;
+  line-height: 1.35;
+  margin-top: 0.55rem;
+}
+
+.video-backup {
+  display: inline-block;
+  font-size: 0.9rem;
+  margin-top: 0.2rem;
+}
+
+.sd-card {
+  border-radius: 8px;
+  border-color: var(--filark-border);
+}
+
+.sd-card .sd-card-title {
+  font-weight: 700;
+}
+
+.sd-card .sd-card-footer {
+  background: color-mix(in srgb, var(--color-background-primary) 86%, var(--color-brand-primary) 14%);
+}
+
+.section-intro {
+  color: var(--color-foreground-secondary);
+  max-width: 50rem;
+}
+
+.sidebar-tree a {
+  border-radius: 6px;
+  color: var(--color-sidebar-link-text);
+  display: block;
+  padding: 0.22rem 0.45rem;
+  text-decoration: none;
+}
+
+.sidebar-tree ul {
+  list-style: none;
+  margin: 0;
+  padding-left: 0;
+}
+
+.sidebar-tree li {
+  margin: 0.08rem 0;
+}
+
+.sidebar-tree li ul {
+  border-left: 1px solid var(--filark-border);
+  margin: 0.3rem 0 0.45rem 0.55rem;
+  padding-left: 0.45rem;
+}
+
+.sidebar-tree a:hover {
+  background: var(--color-sidebar-item-background--hover);
+}
+
+.sidebar-tree .current-page > a {
+  background: var(--color-sidebar-item-background--current);
+  color: var(--color-sidebar-link-text--top-level);
+  font-weight: 700;
+}
+
+.highlight pre {
+  border-radius: 8px;
+}
+
+table.docutils {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.media-slot {
+  align-items: center;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-brand-primary) 8%, transparent), transparent 45%),
+    var(--filark-surface);
+  border: 1px dashed var(--filark-border);
+  border-radius: 8px;
+  color: var(--color-foreground-secondary);
+  display: flex;
+  margin: 1rem 0 1.25rem;
+  min-height: 13rem;
+  padding: 1rem;
+}
+
+.media-slot div {
+  max-width: 34rem;
+}
+
+.media-slot strong {
+  color: var(--color-foreground-primary);
+  display: block;
+  font-size: 0.95rem;
+  margin-bottom: 0.35rem;
+}
+
+.media-slot span {
+  display: block;
+  line-height: 1.55;
+}
+
+@media (max-width: 760px) {
+  .landing-hero {
+    max-width: 100%;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+    max-width: 100%;
+  }
+
+  .video-grid {
+    grid-template-columns: 1fr;
+  }
+}

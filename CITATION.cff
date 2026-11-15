@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "If you use FiLark, please cite it as below."
+title: "FiLark"
+version: 0.0.5
+license: MIT
+repository-code: "https://github.com/JintaoLee-Roger/filark"
+authors:
+  - family-names: Li
+    given-names: Jintao
+    orcid: "https://orcid.org/0000-0002-1022-9170"
+  - family-names: Li
+    given-names: Weichang
+    orcid: "https://orcid.org/0000-0002-8444-9395"

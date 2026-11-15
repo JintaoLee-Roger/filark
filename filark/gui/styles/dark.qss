@@ -1,0 +1,199 @@
+/* =========================
+   FilArk Dark Theme (QSS)
+   ========================= */
+
+/* ---- Base ---- */
+* {
+    /* font-family: "Inter", "SF Pro Display", "PingFang SC", "Microsoft YaHei", sans-serif; */
+    /* font-size: 13px;  */
+    color: #d8d8d8;
+}
+
+QMainWindow, QWidget {
+    background: #141414;
+}
+
+QWidget#NativeTitleBarHitArea {
+    background: transparent;
+    border: 0;
+}
+
+QLabel#ShortcutHelpTitle {
+    color: #f0f0f0;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+QLabel#ShortcutHelpHint {
+    color: #a8a8a8;
+}
+
+QLabel#ShortcutKey {
+    color: #f2f2f2;
+    background: #202020;
+    border: 1px solid #3a3a3a;
+    border-radius: 5px;
+    padding: 3px 8px;
+    font-weight: 600;
+}
+
+QLabel#ShortcutAction {
+    color: #d8d8d8;
+}
+
+
+/* =========================
+   NavBar styling
+   ========================= */
+
+/* ---- Tool buttons (icon navbar) ---- */
+QFrame#NavBar QToolButton {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.82);
+    border: 1px solid transparent; /* Reserve space for hover/checked outlines. */
+    border-radius: 12px;
+    padding: 2px;
+    margin: 0px;
+
+    /* font-size: 10px; */ /* Use 10pt if Qt warns about pixel/point mixing. */
+    font-weight: 600;
+}
+
+/* Hover */
+QFrame#NavBar QToolButton:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Pressed */
+QFrame#NavBar QToolButton:pressed {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.10);
+}
+
+/* Checked */
+QFrame#NavBar QToolButton:checked {
+    background: rgba(74, 144, 226, 0.18);      /* accent wash */
+    border-color: rgba(74, 144, 226, 0.35);    /* accent outline */
+    color: rgba(255, 255, 255, 0.92);
+}
+
+/* Checked + hover */
+QFrame#NavBar QToolButton:checked:hover {
+    background: rgba(74, 144, 226, 0.24);
+    border-color: rgba(74, 144, 226, 0.45);
+}
+
+/* Disabled */
+QFrame#NavBar QToolButton:disabled {
+    color: rgba(255, 255, 255, 0.30);
+}
+
+
+
+/* =========================
+   SlidingDrawer styling
+   ========================= */
+
+#SlidingDrawer {
+    background: rgba(40, 40, 40, 0.95);
+    border-right: 1px solid #555;
+    border-top: 1px solid #555;
+}
+
+/* Drawer cards/panels */
+#SlidingDrawer QFrame, #SlidingDrawer QGroupBox {
+    background: rgba(30, 30, 30, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ---- Stacked pages ---- */
+QStackedWidget {
+    background: transparent;
+}
+
+
+
+
+PanelTitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.95);
+    padding-bottom: 4px;
+}
+
+HintText {
+    color: rgba(255,255,255,0.55);
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+
+QToolTip {
+    background-color: #2a2a2a;
+    color: #e0e0e0;
+    border: 1px solid #666;
+    padding: 4px 6px;
+    opacity: 255;
+}
+
+QLabel { background: transparent; border: none; }
+
+QGroupBox {
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    margin-top: 10px;
+    padding: 10px;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 12px;
+    top: 0px;
+    padding: 0 6px;
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.65);
+    background: #0f1115;
+}
+
+
+
+/* Annotation list readability */
+#annList {
+    background: #1e1e1e;
+    color: #e6e6e6;
+    border: 1px solid #3a3a3a;
+    border-radius: 6px;
+    padding: 4px;
+    alternate-background-color: #252526; /* Alternating row background. */
+}
+
+#annList::item {
+    padding: 4px 6px;
+    margin: 1px 0px;
+    border-radius: 4px;
+}
+
+/* Selected */
+#annList::item:selected {
+    background: #0e639c;
+    color: #ffffff;
+}
+
+/* Selected while inactive */
+#annList::item:selected:!active {
+    background: #3a3d41;
+    color: #ffffff;
+}
+
+/* Hover */
+#annList::item:hover {
+    background: #2a2d2e;
+}
+
+/* Disabled */
+#annList:disabled {
+    color: #888888;
+}

@@ -1,0 +1,63 @@
+{% set guide_pages = [
+  "guides",
+  "io_loader_guide",
+  "visualization",
+  "gui_stream_processing",
+  "annotations",
+  "monitoring",
+  "dsp_pipeline",
+  "gui_plugins",
+  "keyboard_shortcuts",
+] %}
+
+<div class="sidebar-tree">
+  <ul>
+    <li class="toctree-l1{% if pagename == 'index' %} current current-page{% endif %}">
+      <a class="reference internal" href="{{ pathto('index') }}"{% if pagename == 'index' %} aria-current="page"{% endif %}>Home</a>
+    </li>
+    <li class="toctree-l1{% if pagename == 'getting_started' %} current current-page{% endif %}">
+      <a class="reference internal" href="{{ pathto('getting_started') }}"{% if pagename == 'getting_started' %} aria-current="page"{% endif %}>Getting Started</a>
+    </li>
+    <li class="toctree-l1{% if pagename == 'basic_usage' %} current current-page{% endif %}">
+      <a class="reference internal" href="{{ pathto('basic_usage') }}"{% if pagename == 'basic_usage' %} aria-current="page"{% endif %}>Basic Usage</a>
+    </li>
+    <li class="toctree-l1{% if pagename == 'concepts' %} current current-page{% endif %}">
+      <a class="reference internal" href="{{ pathto('concepts') }}"{% if pagename == 'concepts' %} aria-current="page"{% endif %}>Concepts</a>
+    </li>
+    <li class="toctree-l1{% if pagename in guide_pages %} current current-page{% endif %}">
+      <a class="reference internal" href="{{ pathto('guides') }}"{% if pagename == 'guides' %} aria-current="page"{% endif %}>Guides</a>
+      <ul>
+        <li class="toctree-l2{% if pagename == 'io_loader_guide' %} current current-page{% endif %}">
+          <a class="reference internal" href="{{ pathto('io_loader_guide') }}"{% if pagename == 'io_loader_guide' %} aria-current="page"{% endif %}>Data Loading</a>
+        </li>
+        <li class="toctree-l2{% if pagename == 'visualization' %} current current-page{% endif %}">
+          <a class="reference internal" href="{{ pathto('visualization') }}"{% if pagename == 'visualization' %} aria-current="page"{% endif %}>Visualization</a>
+        </li>
+        <li class="toctree-l2{% if pagename == 'gui_stream_processing' %} current current-page{% endif %}">
+          <a class="reference internal" href="{{ pathto('gui_stream_processing') }}"{% if pagename == 'gui_stream_processing' %} aria-current="page"{% endif %}>Streaming Processing</a>
+        </li>
+        <li class="toctree-l2{% if pagename == 'annotations' %} current current-page{% endif %}">
+          <a class="reference internal" href="{{ pathto('annotations') }}"{% if pagename == 'annotations' %} aria-current="page"{% endif %}>Annotation</a>
+        </li>
+        <li class="toctree-l2{% if pagename == 'monitoring' %} current current-page{% endif %}">
+          <a class="reference internal" href="{{ pathto('monitoring') }}"{% if pagename == 'monitoring' %} aria-current="page"{% endif %}>Monitoring</a>
+        </li>
+        <li class="toctree-l2{% if pagename == 'dsp_pipeline' %} current current-page{% endif %}">
+          <a class="reference internal" href="{{ pathto('dsp_pipeline') }}"{% if pagename == 'dsp_pipeline' %} aria-current="page"{% endif %}>DSP And Pipelines</a>
+        </li>
+        <li class="toctree-l2{% if pagename == 'gui_plugins' %} current current-page{% endif %}">
+          <a class="reference internal" href="{{ pathto('gui_plugins') }}"{% if pagename == 'gui_plugins' %} aria-current="page"{% endif %}>GUI Plugins</a>
+        </li>
+        <li class="toctree-l2{% if pagename == 'keyboard_shortcuts' %} current current-page{% endif %}">
+          <a class="reference internal" href="{{ pathto('keyboard_shortcuts') }}"{% if pagename == 'keyboard_shortcuts' %} aria-current="page"{% endif %}>Keyboard Shortcuts</a>
+        </li>
+      </ul>
+    </li>
+    <li class="toctree-l1{% if pagename == 'showcase' %} current current-page{% endif %}">
+      <a class="reference internal" href="{{ pathto('showcase') }}"{% if pagename == 'showcase' %} aria-current="page"{% endif %}>Showcase</a>
+    </li>
+    <li class="toctree-l1{% if pagename == 'extensions' %} current current-page{% endif %}">
+      <a class="reference internal" href="{{ pathto('extensions') }}"{% if pagename == 'extensions' %} aria-current="page"{% endif %}>Extensions</a>
+    </li>
+  </ul>
+</div>
